@@ -162,6 +162,8 @@
     var crateTexture;
     var roofTopTexture;
     var treeStructure;
+    var windowTexture;
+    var doorTexture;
 
     function initTexture() {
         crateTexture = gl.createTexture();
@@ -185,6 +187,20 @@
         }
 
         treeStructure.image.src = "tree-structure.jpg";
+        windowTexture = gl.createTexture();
+        windowTexture.image = new Image();
+        windowTexture.image.onload = function () {
+            handleLoadedTexture(windowTexture)
+        }
+
+        windowTexture.image.src = "window-texture.jpg";
+        doorTexture = gl.createTexture();
+        doorTexture.image = new Image();
+        doorTexture.image.onload = function () {
+            handleLoadedTexture(doorTexture)
+        }
+
+        doorTexture.image.src = "door-texture.jpg";
     }
 
 
@@ -288,6 +304,12 @@
     var trianglesColorBuffer;
     var coordinateArray = [];
     var verticesIndexArray;
+
+    var squareVertexPositionBuffer;
+    var squareVertexTextureBuffer;
+
+    var doorVertexPositionBuffer;
+    var doorVertexTextureBuffer; 
 
     function initBuffers() {
       
@@ -646,6 +668,53 @@
         cubeTreeVertexIndexBuffer.itemSize = 1;
         cubeTreeVertexIndexBuffer.numItems = 36;
 
+        //window
+        squareVertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+        vertices = [
+             1.0,  1.0,  0.0,
+            -1.0,  1.0,  0.0,
+             1.0, -1.0,  0.0,
+            -1.0, -1.0,  0.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        squareVertexPositionBuffer.itemSize = 3;
+        squareVertexPositionBuffer.numItems = 4;
+        squareVertexTextureBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexTextureBuffer);
+        colors = [
+             1.0,  1.0,  
+            -1.0,  1.0, 
+             1.0, -1.0, 
+            -1.0, -1.0, 
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        squareVertexTextureBuffer.itemSize = 2;
+        squareVertexTextureBuffer.numItems = 4;
+        //door
+        doorVertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, doorVertexPositionBuffer);
+        vertices = [
+             1.0,  1.0,  0.0,
+            -1.0,  1.0,  0.0,
+             1.0, -1.0,  0.0,
+            -1.0, -1.0,  0.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        doorVertexPositionBuffer.itemSize = 3;
+        doorVertexPositionBuffer.numItems = 4;
+        doorVertexTextureBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, doorVertexTextureBuffer);
+        colors = [
+             1.0,  1.0,  
+            -1.0,  1.0, 
+             1.0, -1.0, 
+            -1.0, -1.0, 
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+        doorVertexTextureBuffer.itemSize = 2;
+        doorVertexTextureBuffer.numItems = 4;
+
         
     }
 
@@ -752,6 +821,35 @@
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeTreeVertexIndexBuffer);
         setMatrixUniforms();
         gl.drawElements(gl.TRIANGLES, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+        mvPopMatrix();
+        //window
+        mvPushMatrix();
+        mat4.scale(mvMatrix, [0.8, 0.5, 0.8]);
+        mat4.translate(mvMatrix, [0.0, -3.5, 1.26]);
+         gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexTextureBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, squareVertexTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.activeTexture(gl.TEXTURE3);
+        gl.bindTexture(gl.TEXTURE_2D, windowTexture);
+        gl.uniform1i(shaderProgram.samplerUniform, 3);
+        setMatrixUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+        mvPopMatrix();
+        //door
+        mvPushMatrix();
+        mat4.scale(mvMatrix, [0.8, 0.9, 0.6]);
+        mat4.translate(mvMatrix, [1.26, -2.3, -0.1]);
+        mat4.rotate(mvMatrix, degToRad(90), [0, 1, 0]);
+         gl.bindBuffer(gl.ARRAY_BUFFER, doorVertexPositionBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, doorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, doorVertexTextureBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, doorVertexTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.activeTexture(gl.TEXTURE4);
+        gl.bindTexture(gl.TEXTURE_2D, doorTexture);
+        gl.uniform1i(shaderProgram.samplerUniform, 4);
+        setMatrixUniforms();
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorVertexPositionBuffer.numItems);
         mvPopMatrix();
 
     }
