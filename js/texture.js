@@ -4,6 +4,7 @@ var treeStructure;
 var windowTexture;
 var doorTexture;
 var wallSmall;
+var topTreeTexture;
 
 function initTexture() {
   crateTexture = gl.createTexture();
@@ -49,6 +50,14 @@ function initTexture() {
       handleLoadedTexture(wallSmall)
   }
   wallSmall.image.src = "./img/wood-texture-small.jpg";
+
+
+  topTreeTexture = gl.createTexture();
+  topTreeTexture.image = new Image();
+  topTreeTexture.image.onload = function () {
+      handleLoadedTexture(topTreeTexture)
+  }
+  topTreeTexture.image.src = "./img/leaf-texture.jpeg";
 }
 
 

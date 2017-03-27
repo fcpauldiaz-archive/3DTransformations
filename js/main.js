@@ -59,6 +59,11 @@ var doorLeftTextureBuffer;
 var doorRightPositionBuffer;
 var doorRightTextureBuffer;
 
+var treeVertexPositionBuffer;
+var treeVertexNormalBuffer;
+var treeVertexTextureCoordBuffer;
+var treeVertexIndexBuffer;
+
 function initBuffers() {
   
     cubeVertexPositionBuffer = gl.createBuffer();
@@ -508,6 +513,70 @@ function initBuffers() {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     doorRightTextureBuffer.itemSize = 2;
     doorRightTextureBuffer.numItems = 4;
+
+    //top tree
+    var latitudeBands = 30;
+    var longitudeBands = 30;
+    var radius = 2;
+    var vertexPositionData = [];
+    var normalData = [];
+    var textureCoordData = [];
+    for (var latNumber=0; latNumber <= latitudeBands; latNumber++) {
+        var theta = latNumber * Math.PI / latitudeBands;
+        var sinTheta = Math.sin(theta);
+        var cosTheta = Math.cos(theta);
+        for (var longNumber=0; longNumber <= longitudeBands; longNumber++) {
+            var phi = longNumber * 2 * Math.PI / longitudeBands;
+            var sinPhi = Math.sin(phi);
+            var cosPhi = Math.cos(phi);
+            var x = cosPhi * sinTheta;
+            var y = cosTheta;
+            var z = sinPhi * sinTheta;
+            var u = 1 - (longNumber / longitudeBands);
+            var v = 1 - (latNumber / latitudeBands);
+            normalData.push(x);
+            normalData.push(y);
+            normalData.push(z);
+            textureCoordData.push(u);
+            textureCoordData.push(v);
+            vertexPositionData.push(radius * x);
+            vertexPositionData.push(radius * y);
+            vertexPositionData.push(radius * z);
+        }
+    }
+    var indexData = [];
+    for (var latNumber=0; latNumber < latitudeBands; latNumber++) {
+        for (var longNumber=0; longNumber < longitudeBands; longNumber++) {
+            var first = (latNumber * (longitudeBands + 1)) + longNumber;
+            var second = first + longitudeBands + 1;
+            indexData.push(first);
+            indexData.push(second);
+            indexData.push(first + 1);
+            indexData.push(second);
+            indexData.push(second + 1);
+            indexData.push(first + 1);
+        }
+    }
+    treeVertexNormalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, treeVertexNormalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normalData), gl.STATIC_DRAW);
+    treeVertexNormalBuffer.itemSize = 3;
+    treeVertexNormalBuffer.numItems = normalData.length / 3;
+    treeVertexTextureCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, treeVertexTextureCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordData), gl.STATIC_DRAW);
+    treeVertexTextureCoordBuffer.itemSize = 2;
+    treeVertexTextureCoordBuffer.numItems = textureCoordData.length / 2;
+    treeVertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, treeVertexPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), gl.STATIC_DRAW);
+    treeVertexPositionBuffer.itemSize = 3;
+    treeVertexPositionBuffer.numItems = vertexPositionData.length / 3;
+    treeVertexIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, treeVertexIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), gl.STATIC_DRAW);
+    treeVertexIndexBuffer.itemSize = 1;
+    treeVertexIndexBuffer.numItems = indexData.length;
     
 }
 
@@ -682,8 +751,9 @@ function drawScene() {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorRightPositionBuffer.numItems);
     mvPopMatrix();
     mvPopMatrix();
-    mvPushMatrix();
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
+    mvPushMatrix();
+    
    
     mat4.translate(mvMatrix, [6.0, -1.5, 0.0]);
     mat4.scale(mvMatrix, [0.8, 1.0, 0.8]);
@@ -704,6 +774,23 @@ function drawScene() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeTreeVertexIndexBuffer);
     setMatrixUniforms();
     gl.drawElements(gl.TRIANGLES, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    mvPopMatrix();
+
+    mvPushMatrix();
+    mat4.translate(mvMatrix, [5.9,1.0, 0.0]);
+    gl.activeTexture(gl.TEXTURE6);
+    gl.bindTexture(gl.TEXTURE_2D, topTreeTexture);
+    gl.uniform1i(shaderProgram.samplerUniform, 6);
+    gl.bindBuffer(gl.ARRAY_BUFFER, treeVertexPositionBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, treeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, treeVertexTextureCoordBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, treeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, treeVertexNormalBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, treeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, treeVertexIndexBuffer);
+    setMatrixUniforms();
+    gl.drawElements(gl.TRIANGLES, treeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
     mvPopMatrix();
 
 }
