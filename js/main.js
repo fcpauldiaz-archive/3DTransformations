@@ -1,3 +1,4 @@
+//global vars
 var gl;
 var shaderProgram;
 
@@ -11,8 +12,16 @@ var xSpeed = 0;
 
 var yRot = 0;
 var ySpeed = 0;
+var scaleActive = false;
+var translateActive = false;
+var rotateActive = true;
 var open = false;
-var first = true;
+var xScale = 1.0;
+var yScale = 1.0;
+var zScale = 1.0;
+var xTranslate = 0.0;
+var yTranslate = 0.0;
+var zTranslate = 0.0;
 
 var z = -30.0;
 
@@ -509,8 +518,15 @@ function drawScene() {
     mat4.identity(mvMatrix);
 
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
+ 
     mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
     mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+
+
+    mat4.scale(mvMatrix, [xScale, yScale, zScale]);
+
+    mat4.translate(mvMatrix, [xTranslate, yTranslate, zTranslate]);   
+
     mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
 
     mvPushMatrix()
