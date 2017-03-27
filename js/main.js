@@ -27,7 +27,7 @@ var xTranslate = 0.0;
 var yTranslate = 0.0;
 var zTranslate = 0.0;
 
-var z = -30.0;
+var z = -15.0;
 
 
 var cubeVertexPositionBuffer;
@@ -524,17 +524,16 @@ function drawScene() {
 
     //rotate house
     if (xTranslate < 0) {
-    mat4.translate(mvMatrix, [xTranslate <= 0? xTranslate: -xTranslate ,yTranslate <= 0? yTranslate: -yTranslate, -zTranslate <= 0? zTranslate: -zTranslate]);   
-    mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
-    mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-    mat4.translate(mvMatrix, [xTranslate >= 0? xTranslate: -xTranslate ,yTranslate >= 0? yTranslate: -yTranslate, -zTranslate >= 0? zTranslate: -zTranslate]);   
+        mat4.translate(mvMatrix, [xTranslate <= 0? xTranslate: -xTranslate ,yTranslate <= 0? yTranslate: -yTranslate, -zTranslate <= 0? zTranslate: -zTranslate]);   
+        mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+        mat4.translate(mvMatrix, [xTranslate >= 0? xTranslate: -xTranslate ,yTranslate >= 0? yTranslate: -yTranslate, -zTranslate >= 0? zTranslate: -zTranslate]);   
     }
     else {
         mat4.translate(mvMatrix, [xTranslate >= 0? xTranslate: -xTranslate ,yTranslate <= 0? yTranslate: -yTranslate, -zTranslate <= 0? zTranslate: -zTranslate]);   
         mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
         mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
         mat4.translate(mvMatrix, [xTranslate <= 0? xTranslate: -xTranslate ,yTranslate >= 0? yTranslate: -yTranslate, -zTranslate >= 0? zTranslate: -zTranslate]);   
-       
     }
     //scale house
     mat4.scale(mvMatrix, [xScale, yScale, zScale]);
@@ -543,8 +542,6 @@ function drawScene() {
    
     mvMatrix = shearMatrix(mvMatrix, xShear, yShear, zShear);
    
-    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
-
     mvPushMatrix()
     mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
 
@@ -686,9 +683,10 @@ function drawScene() {
     mvPopMatrix();
     mvPopMatrix();
     mvPushMatrix();
-    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
-    mat4.translate(mvMatrix, [4.0, -1.5, 0.0]);
-    mat4.scale(mvMatrix, [0.8, 0.5, 0.8]);
+    mat4.translate(mvMatrix, [0.0, 0.0, z]);
+   
+    mat4.translate(mvMatrix, [6.0, -1.5, 0.0]);
+    mat4.scale(mvMatrix, [0.8, 1.0, 0.8]);
     //cube tree
     gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeTreeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
