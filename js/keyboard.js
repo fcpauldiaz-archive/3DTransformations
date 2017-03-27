@@ -103,7 +103,7 @@ function handleKeys() {
         if (scaleActive) {
             xScale -= 0.1;
         } else if( translateActive) {
-            xTranslate += 0.5;
+            xTranslate -= 0.5;
         } 
         else if (rotateActive) {
             ySpeed -= 1;
@@ -118,7 +118,7 @@ function handleKeys() {
         if (scaleActive) {
             xScale += 0.1;
         } else if (translateActive) {
-            xTranslate -= 0.5;
+            xTranslate += 0.5;
         } 
         else if (rotateActive) {
            ySpeed += 1; 
@@ -133,7 +133,7 @@ function handleKeys() {
         if (scaleActive) {
             yScale += 0.1;
         } else if (translateActive) {
-            yTranslate -= 0.5;
+            yTranslate += 0.5;
         } 
         else if (rotateActive) {
             xSpeed -= 1;
@@ -148,7 +148,7 @@ function handleKeys() {
         if (scaleActive) {
             yScale -= 0.1;
         } else if (translateActive) {
-            yTranslate += 0.5;
+            yTranslate -= 0.5;
         }
          else if (rotateActive) {
             xSpeed += 1;

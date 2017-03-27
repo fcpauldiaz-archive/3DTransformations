@@ -513,19 +513,29 @@ function initBuffers() {
 
 
 function drawScene() {
-    gl.enable ( gl.BLEND ) ;
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 
     mat4.identity(mvMatrix);
-
+    mvPushMatrix();
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
+
     //rotate house
+    if (xTranslate < 0) {
+    mat4.translate(mvMatrix, [xTranslate <= 0? xTranslate: -xTranslate ,yTranslate <= 0? yTranslate: -yTranslate, -zTranslate <= 0? zTranslate: -zTranslate]);   
     mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
     mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-
+    mat4.translate(mvMatrix, [xTranslate >= 0? xTranslate: -xTranslate ,yTranslate >= 0? yTranslate: -yTranslate, -zTranslate >= 0? zTranslate: -zTranslate]);   
+    }
+    else {
+        mat4.translate(mvMatrix, [xTranslate >= 0? xTranslate: -xTranslate ,yTranslate <= 0? yTranslate: -yTranslate, -zTranslate <= 0? zTranslate: -zTranslate]);   
+        mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+        mat4.translate(mvMatrix, [xTranslate <= 0? xTranslate: -xTranslate ,yTranslate >= 0? yTranslate: -yTranslate, -zTranslate >= 0? zTranslate: -zTranslate]);   
+       
+    }
     //scale house
     mat4.scale(mvMatrix, [xScale, yScale, zScale]);
     //translate house
@@ -606,28 +616,6 @@ function drawScene() {
     gl.drawArrays(gl.TRIANGLES, 0, trianglesVerticeBuffer.numItems);
 
     mvPopMatrix();
-    mvPushMatrix();
-    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
-    mat4.translate(mvMatrix, [4.0, -1.5, 0.0]);
-    mat4.scale(mvMatrix, [0.8, 0.5, 0.8]);
-    //cube tree
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexPositionBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeTreeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexNormalBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeTreeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexTextureCoordBuffer);
-    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeTreeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-    gl.activeTexture(gl.TEXTURE2);
-    gl.bindTexture(gl.TEXTURE_2D, treeStructure);
-    gl.uniform1i(shaderProgram.samplerUniform, 2);
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeTreeVertexIndexBuffer);
-    setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-    mvPopMatrix();
     //window
     mvPushMatrix();
     mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
@@ -695,6 +683,29 @@ function drawScene() {
     gl.uniform1i(shaderProgram.samplerUniform, 5);
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorRightPositionBuffer.numItems);
+    mvPopMatrix();
+    mvPopMatrix();
+    mvPushMatrix();
+    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
+    mat4.translate(mvMatrix, [4.0, -1.5, 0.0]);
+    mat4.scale(mvMatrix, [0.8, 0.5, 0.8]);
+    //cube tree
+    gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexPositionBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeTreeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexNormalBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeTreeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexTextureCoordBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeTreeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, treeStructure);
+    gl.uniform1i(shaderProgram.samplerUniform, 2);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeTreeVertexIndexBuffer);
+    setMatrixUniforms();
+    gl.drawElements(gl.TRIANGLES, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     mvPopMatrix();
 
 }
