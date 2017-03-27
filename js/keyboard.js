@@ -41,17 +41,26 @@ function handleKeyUp(event) {
         scaleActive = !scaleActive;
         translateActive = false;
         rotateActive = false;
+        shearActive = false;
     }
     //translate active
     if (currentlyPressedKeys[84]) {
         translateActive = !translateActive;
         rotateActive = false;
         scaleActive = false;
+        shearActive = false;
     }
     if (currentlyPressedKeys[82]) {
         rotateActive = !rotateActive;
         translateActive = false;
         scaleActive = false;
+        shearActive = false;
+    }
+    if (currentlyPressedKeys[69]) {
+        shearActive = !shearActive;
+        translateActive = false;
+        scaleActive = false;
+        rotateActive = false;
     }
     currentlyPressedKeys[event.keyCode] = false;
 }
@@ -69,6 +78,9 @@ function handleKeys() {
         else if (rotateActive) {
             z -= 0.5;
         }
+        else if (shearActive) {
+            zShear -= 0.1;
+        }
     }
     if (currentlyPressedKeys[34]) {
         // Page Down
@@ -80,6 +92,9 @@ function handleKeys() {
         }
         else if (rotateActive) {
             z += 0.5;
+        }
+        else if (shearActive) {
+            zShear += 0.1;
         }
     }
     if (currentlyPressedKeys[37]) {
@@ -93,6 +108,9 @@ function handleKeys() {
         else if (rotateActive) {
             ySpeed -= 1;
         }
+        else if (shearActive) {
+            xShear -= 0.1;
+        }
     }
     if (currentlyPressedKeys[39]) {
         // Right cursor key
@@ -104,6 +122,9 @@ function handleKeys() {
         } 
         else if (rotateActive) {
            ySpeed += 1; 
+        }
+        else if (shearActive) {
+            xShear += 0.1;
         }
     }
     if (currentlyPressedKeys[38]) {
@@ -117,6 +138,9 @@ function handleKeys() {
         else if (rotateActive) {
             xSpeed -= 1;
         }
+        else if (shearActive) {
+            yShear += 0.1;
+        }
     }
     if (currentlyPressedKeys[40]) {
         // Down cursor key
@@ -128,6 +152,9 @@ function handleKeys() {
         }
          else if (rotateActive) {
             xSpeed += 1;
+        }
+        else if (shearActive) {
+            yShear -= 0.1;
         }
     }
 }

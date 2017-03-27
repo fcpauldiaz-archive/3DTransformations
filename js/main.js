@@ -14,11 +14,15 @@ var yRot = 0;
 var ySpeed = 0;
 var scaleActive = false;
 var translateActive = false;
+var shearActive = false;
 var rotateActive = true;
 var open = false;
 var xScale = 1.0;
 var yScale = 1.0;
 var zScale = 1.0;
+var xShear = 0;
+var yShear = 0;
+var zShear = 0;
 var xTranslate = 0.0;
 var yTranslate = 0.0;
 var zTranslate = 0.0;
@@ -518,15 +522,17 @@ function drawScene() {
     mat4.identity(mvMatrix);
 
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
- 
+    //rotate house
     mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
     mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
 
-
+    //scale house
     mat4.scale(mvMatrix, [xScale, yScale, zScale]);
-
+    //translate house
     mat4.translate(mvMatrix, [xTranslate, yTranslate, zTranslate]);   
-
+   
+    mvMatrix = shearMatrix(mvMatrix, xShear, yShear, zShear);
+   
     mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
 
     mvPushMatrix()
