@@ -5,6 +5,7 @@ var shaderProgram;
 var mvMatrix = mat4.create();
 var mvMatrixStack = [];
 var pMatrix = mat4.create();
+var mesh;
 
 
 var xRot = 0;
@@ -577,6 +578,7 @@ function initBuffers() {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), gl.STATIC_DRAW);
     treeVertexIndexBuffer.itemSize = 1;
     treeVertexIndexBuffer.numItems = indexData.length;
+
     
 }
 
@@ -750,6 +752,36 @@ function drawScene() {
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorRightPositionBuffer.numItems);
     mvPopMatrix();
+    mvPushMatrix();
+    mat4.translate(mvMatrix, [0.0, -3.0, 0.0]);
+    mat4.scale(mvMatrix, [0.5, 0.4, 0.5]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.vertexBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, mesh.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    // it's possible that the mesh doesn't contain
+    // any texture coordinates (e.g. suzanne.obj in the development branch).
+    // in this case, the texture vertexAttribArray will need to be disabled
+    // before the call to drawElements
+    if(!mesh.textures.length){
+     gl.disableVertexAttribArray(shaderProgram.textureCoordAttribute);
+    }
+    else{
+      // if the texture vertexAttribArray has been previously
+      // disabled, then it needs to be re-enabled
+      gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.textureBuffer);
+      gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, mesh.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.normalBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, mesh.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
+    setMatrixUniforms();
+    gl.drawElements(gl.TRIANGLES, mesh.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    mvPopMatrix();
+    gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
     mvPopMatrix();
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
     mvPushMatrix();
@@ -792,7 +824,7 @@ function drawScene() {
     gl.drawElements(gl.TRIANGLES, treeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 
     mvPopMatrix();
-
+     
 }
 
 
@@ -829,6 +861,13 @@ function webGLStart() {
     initShaders();
     initBuffers();
     initTexture();
+    var objStr = document.getElementById('my_cube.obj').innerHTML;
+    mesh = new OBJ.Mesh(objStr);
+
+    // use the included helper function to initialize the VBOs
+    // if you don't want to use this function, have a look at its
+    // source to see how to use the Mesh instance.
+    OBJ.initMeshBuffers(gl, mesh);
 
     //gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);

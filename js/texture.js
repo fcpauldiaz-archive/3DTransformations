@@ -5,6 +5,7 @@ var windowTexture;
 var doorTexture;
 var wallSmall;
 var topTreeTexture;
+var bootleTexture;
 
 function initTexture() {
   crateTexture = gl.createTexture();
@@ -58,6 +59,13 @@ function initTexture() {
       handleLoadedTexture(topTreeTexture)
   }
   topTreeTexture.image.src = "./img/leaf-texture.jpeg";
+
+  bootleTexture = gl.createTexture();
+  bootleTexture.image = new Image();
+  bootleTexture.image.onload = function () {
+      handleLoadedTexture(bootleTexture)
+  }
+  bootleTexture.image.src = "./img/bottle.jpeg";
 }
 
 
