@@ -23,6 +23,19 @@ function handleKeyUp(event) {
         // Down cursor key
         xSpeed = 0;
     }
+    if (currentlyPressedKeys[79]) {
+        open = !open;
+        if (open === true) {
+            var sound = document.getElementById("audio");
+            audio.pause();
+            audio.currentTime = 0;
+            audio.play();
+        }
+        else {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    }
     currentlyPressedKeys[event.keyCode] = false;
 }
 
@@ -30,11 +43,11 @@ function handleKeyUp(event) {
 function handleKeys() {
     if (currentlyPressedKeys[33]) {
         // Page Up
-        z -= 0.05;
+        z -= 0.5;
     }
     if (currentlyPressedKeys[34]) {
         // Page Down
-        z += 0.05;
+        z += 0.5;
     }
     if (currentlyPressedKeys[37]) {
         // Left cursor key

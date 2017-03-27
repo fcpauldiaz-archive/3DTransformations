@@ -3,6 +3,7 @@ var roofTopTexture;
 var treeStructure;
 var windowTexture;
 var doorTexture;
+var wallSmall;
 
 function initTexture() {
   crateTexture = gl.createTexture();
@@ -33,13 +34,21 @@ function initTexture() {
   }
 
   windowTexture.image.src = "./img/window-texture.jpg";
+
   doorTexture = gl.createTexture();
   doorTexture.image = new Image();
   doorTexture.image.onload = function () {
       handleLoadedTexture(doorTexture)
   }
-
   doorTexture.image.src = "./img/door-texture.jpg";
+
+
+  wallSmall = gl.createTexture();
+  wallSmall.image = new Image();
+  wallSmall.image.onload = function () {
+      handleLoadedTexture(wallSmall)
+  }
+  wallSmall.image.src = "./img/wood-texture-small.jpg";
 }
 
 

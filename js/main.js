@@ -11,8 +11,10 @@ var xSpeed = 0;
 
 var yRot = 0;
 var ySpeed = 0;
+var open = false;
+var first = true;
 
-var z = -8.0;
+var z = -30.0;
 
 
 var cubeVertexPositionBuffer;
@@ -38,6 +40,11 @@ var squareVertexTextureBuffer;
 
 var doorVertexPositionBuffer;
 var doorVertexTextureBuffer; 
+
+var doorLeftPositionBuffer;
+var doorLeftTextureBuffer;
+var doorRightPositionBuffer;
+var doorRightTextureBuffer;
 
 function initBuffers() {
   
@@ -69,10 +76,10 @@ function initBuffers() {
         -1.0, -1.0,  1.0,
 
         // Right face
-         1.0, -1.0, -1.0,
-         1.0,  1.0, -1.0,
-         1.0,  1.0,  1.0,
-         1.0, -1.0,  1.0,
+         1.0, -1.0,  -1.0,
+         1.0,  1.0,  -1.0,
+         1.0,  1.0,  -1.0,
+         1.0, -1.0,  -1.0,
 
         // Left face
         -1.0, -1.0, -1.0,
@@ -442,12 +449,58 @@ function initBuffers() {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     doorVertexTextureBuffer.itemSize = 2;
     doorVertexTextureBuffer.numItems = 4;
-
+    //door left
+    doorLeftPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorLeftPositionBuffer);
+    vertices = [
+         1.0,  1.0,  0.0,
+        -1.0,  1.0,  0.0,
+         1.0, -1.0,  0.0,
+        -1.0, -1.0,  0.0
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    doorLeftPositionBuffer.itemSize = 3;
+    doorLeftPositionBuffer.numItems = 4;
+    doorLeftTextureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorLeftTextureBuffer);
+    colors = [
+         1.0,  1.0,  
+        -1.0,  1.0, 
+         1.0, -1.0, 
+        -1.0, -1.0, 
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    doorLeftTextureBuffer.itemSize = 2;
+    doorLeftTextureBuffer.numItems = 4;
+    //door rigth
+    doorRightPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorRightPositionBuffer);
+    vertices = [
+         1.0,  1.0,  1.0,
+        -1.0,  1.0,  1.0,
+         1.0, -1.0,  1.0,
+        -1.0, -1.0,  1.0
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    doorRightPositionBuffer.itemSize = 3;
+    doorRightPositionBuffer.numItems = 4;
+    doorRightTextureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorRightTextureBuffer);
+    colors = [
+         1.0,  1.0,  
+        -1.0,  1.0, 
+         1.0, -1.0, 
+        -1.0, -1.0, 
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    doorRightTextureBuffer.itemSize = 2;
+    doorRightTextureBuffer.numItems = 4;
     
 }
 
 
 function drawScene() {
+    gl.enable ( gl.BLEND ) ;
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -458,10 +511,10 @@ function drawScene() {
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
     mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
     mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-
+    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
 
     mvPushMatrix()
-    
+    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -510,6 +563,8 @@ function drawScene() {
     mat4.translate(mvMatrix, [0.0, 2.0, 0.0]);
     //pyramid
     mvPushMatrix();
+    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
+    mat4.translate(mvMatrix, [0.0, 1.0, 0.0]);
     gl.bindBuffer(gl.ARRAY_BUFFER, trianglesVerticeBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, trianglesVerticeBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -530,7 +585,8 @@ function drawScene() {
 
     mvPopMatrix();
     mvPushMatrix();
-    mat4.translate(mvMatrix, [4.0, -2.5, 0.0]);
+    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
+    mat4.translate(mvMatrix, [4.0, -1.5, 0.0]);
     mat4.scale(mvMatrix, [0.8, 0.5, 0.8]);
     //cube tree
     gl.bindBuffer(gl.ARRAY_BUFFER, cubeTreeVertexPositionBuffer);
@@ -552,8 +608,9 @@ function drawScene() {
     mvPopMatrix();
     //window
     mvPushMatrix();
+    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
     mat4.scale(mvMatrix, [0.8, 0.5, 0.8]);
-    mat4.translate(mvMatrix, [0.0, -3.5, 1.26]);
+    mat4.translate(mvMatrix, [0.0, -1.5, 1.26]);
      gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexTextureBuffer);
@@ -564,12 +621,18 @@ function drawScene() {
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
     mvPopMatrix();
-    //door
+    //door draw
     mvPushMatrix();
-    mat4.scale(mvMatrix, [0.8, 0.9, 0.6]);
-    mat4.translate(mvMatrix, [1.26, -2.3, -0.1]);
-    mat4.rotate(mvMatrix, degToRad(90), [0, 1, 0]);
-     gl.bindBuffer(gl.ARRAY_BUFFER, doorVertexPositionBuffer);
+    mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
+    mat4.scale(mvMatrix, [0.8, 1.0, 0.6]);
+    mat4.translate(mvMatrix, [1.26, -1.0, -0.1]);
+    if (open === false) {
+         mat4.rotate(mvMatrix, degToRad(90), [0, 1, 0]);
+    } else {
+        mat4.rotate(mvMatrix, degToRad(0), [0, 1, 0]);
+        mat4.translate(mvMatrix, [1.0, 0.0, 1.0]);
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, doorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, doorVertexTextureBuffer);
     gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, doorVertexTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -579,6 +642,38 @@ function drawScene() {
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorVertexPositionBuffer.numItems);
     mvPopMatrix();
+    //door left
+    mvPushMatrix();
+
+    mat4.scale(mvMatrix, [0.8, 2.0, 0.5]);
+    mat4.translate(mvMatrix, [2.5, -1.0, 3.0]);
+    mat4.rotate(mvMatrix, degToRad(90), [0, 1, 0]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorLeftPositionBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, doorLeftPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorLeftTextureBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, doorLeftTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, crateTexture);
+    gl.uniform1i(shaderProgram.samplerUniform, 0);
+    setMatrixUniforms();
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorLeftPositionBuffer.numItems);
+    mvPopMatrix();
+    //door rigth
+    mvPushMatrix();
+
+    mat4.scale(mvMatrix, [0.8, 2.0, 0.5]);
+    mat4.translate(mvMatrix, [1.5, -1.0, -3.0]);
+    mat4.rotate(mvMatrix, degToRad(90), [0, 1, 0]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorRightPositionBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, doorRightPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, doorRightTextureBuffer);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, doorRightTextureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.activeTexture(gl.TEXTURE5);
+    gl.bindTexture(gl.TEXTURE_2D, wallSmall);
+    gl.uniform1i(shaderProgram.samplerUniform, 5);
+    setMatrixUniforms();
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorRightPositionBuffer.numItems);
+    mvPopMatrix();
 
 }
 
@@ -587,6 +682,7 @@ var lastTime = 0;
 
 function animate() {
     var timeNow = new Date().getTime();
+
     if (lastTime != 0) {
         var elapsed = timeNow - lastTime;
 
@@ -606,7 +702,7 @@ function tick() {
 
 
 function webGLStart() {
-     var canvas = document.createElement('canvas');
+    var canvas = document.createElement('canvas');
     canvas.id     = "lesson07-canvas";
     canvas.width = document.body.clientWidth-20;
     canvas.height = document.body.clientHeight-20;
@@ -621,6 +717,5 @@ function webGLStart() {
 
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
-
     tick();
 }
