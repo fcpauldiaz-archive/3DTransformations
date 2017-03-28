@@ -47,7 +47,7 @@ var yTreeShear = 0;
 var zTreeShear = 0;
 var xTreeTranslate = 0.0;
 var yTreeTranslate = 0.0;
-var zTreeTranslate = 0.0;
+var zTreeTranslate = -8.0;
 
 
 var z = -15.0;
@@ -983,17 +983,17 @@ function drawScene() {
     gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
     mvPopMatrix();
     mvPushMatrix();
-    mat4.translate(mvMatrix, [0.0, 0.0, z]);
+    mat4.translate(mvMatrix, [0.0, 0.0, zTreeTranslate]);
     //Transformations for tree
 
     //rotate house
 
-        //mat4.translate(mvMatrix, [xTreeTranslate >= 0? xTreeTranslate: -xTreeTranslate ,yTreeTranslate <= 0? yTreeTranslate: -yTreeTranslate, -zTreeTranslate <= 0? zTreeTranslate: -zTreeTranslate]);   
-        mat4.translate(mvMatrix, [6.0+xTreeTranslate, -1.5, 0.0]);
-        mat4.rotate(mvMatrix, degToRad(xTreeRot), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(yTreeRot), [0, 1, 0]);
-        mat4.translate(mvMatrix, [-6.0-xTreeTranslate, 1.5, 0.0]);
-        //mat4.translate(mvMatrix, [xTreeTranslate <= 0? xTreeTranslate: -xTreeTranslate ,yTreeTranslate >= 0? yTreeTranslate: -yTreeTranslate, -zTreeTranslate >= 0? zTreeTranslate: -zTreeTranslate]);   
+    //mat4.translate(mvMatrix, [xTreeTranslate >= 0? xTreeTranslate: -xTreeTranslate ,yTreeTranslate <= 0? yTreeTranslate: -yTreeTranslate, -zTreeTranslate <= 0? zTreeTranslate: -zTreeTranslate]);   
+    mat4.translate(mvMatrix, [6.0+xTreeTranslate, -1.5+yTreeTranslate, zTreeTranslate]);
+    mat4.rotate(mvMatrix, degToRad(xTreeRot), [1, 0, 0]);
+    mat4.rotate(mvMatrix, degToRad(yTreeRot), [0, 1, 0]);
+    mat4.translate(mvMatrix, [-6.0-xTreeTranslate, 1.5-yTreeTranslate, -zTreeTranslate]);
+    //mat4.translate(mvMatrix, [xTreeTranslate <= 0? xTreeTranslate: -xTreeTranslate ,yTreeTranslate >= 0? yTreeTranslate: -yTreeTranslate, -zTreeTranslate >= 0? zTreeTranslate: -zTreeTranslate]);   
         
     
     //scale Tree
