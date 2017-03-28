@@ -8,25 +8,47 @@ var pMatrix = mat4.create();
 var mesh;
 
 
-var xRot = 0;
-var xSpeed = 0;
-
-var yRot = 0;
-var ySpeed = 0;
-var scaleActive = false;
-var translateActive = false;
-var shearActive = false;
-var rotateActive = true;
+//house variables
+var houseActive = true;
+var xHouseRot = 0;
+var xHouseSpeed = 0;
+var yHouseRot = 0;
+var yHouseSpeed = 0;
+var scaleHouseActive = false;
+var translateHouseActive = false;
+var shearHouseActive = false;
+var rotateHouseActive = true;
 var open = false;
-var xScale = 1.0;
-var yScale = 1.0;
-var zScale = 1.0;
-var xShear = 0;
-var yShear = 0;
-var zShear = 0;
-var xTranslate = 0.0;
-var yTranslate = 0.0;
-var zTranslate = 0.0;
+var xHouseScale = 1.0;
+var yHouseScale = 1.0;
+var zHouseScale = 1.0;
+var xHouseShear = 0;
+var yHouseShear = 0;
+var zHouseShear = 0;
+var xHouseTranslate = 0.0;
+var yHouseTranslate = 0.0;
+var zHouseTranslate = 0.0;
+
+//tree variables
+var treeActive = false;
+var xTreeRot = 0;
+var xTreeSpeed = 0;
+var yTreeRot = 0;
+var yTreeSpeed = 0;
+var scaleTreeActive = false;
+var translateTreeActive = false;
+var shearTreeActive = false;
+var rotateTreeActive = true;
+var xTreeScale = 1.0;
+var yTreeScale = 1.0;
+var zTreeScale = 1.0;
+var xTreeShear = 0;
+var yTreeShear = 0;
+var zTreeShear = 0;
+var xTreeTranslate = 0.0;
+var yTreeTranslate = 0.0;
+var zTreeTranslate = 0.0;
+
 
 var z = -15.0;
 
@@ -594,24 +616,24 @@ function drawScene() {
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
 
     //rotate house
-    if (xTranslate < 0) {
-        mat4.translate(mvMatrix, [xTranslate <= 0? xTranslate: -xTranslate ,yTranslate <= 0? yTranslate: -yTranslate, -zTranslate <= 0? zTranslate: -zTranslate]);   
-        mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-        mat4.translate(mvMatrix, [xTranslate >= 0? xTranslate: -xTranslate ,yTranslate >= 0? yTranslate: -yTranslate, -zTranslate >= 0? zTranslate: -zTranslate]);   
+    if (xHouseTranslate < 0) {
+        mat4.translate(mvMatrix, [xHouseTranslate <= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate <= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate <= 0? zHouseTranslate: -zHouseTranslate]);   
+        mat4.rotate(mvMatrix, degToRad(xHouseRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(yHouseRot), [0, 1, 0]);
+        mat4.translate(mvMatrix, [xHouseTranslate >= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate >= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate >= 0? zHouseTranslate: -zHouseTranslate]);   
     }
     else {
-        mat4.translate(mvMatrix, [xTranslate >= 0? xTranslate: -xTranslate ,yTranslate <= 0? yTranslate: -yTranslate, -zTranslate <= 0? zTranslate: -zTranslate]);   
-        mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
-        mat4.translate(mvMatrix, [xTranslate <= 0? xTranslate: -xTranslate ,yTranslate >= 0? yTranslate: -yTranslate, -zTranslate >= 0? zTranslate: -zTranslate]);   
+        mat4.translate(mvMatrix, [xHouseTranslate >= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate <= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate <= 0? zHouseTranslate: -zHouseTranslate]);   
+        mat4.rotate(mvMatrix, degToRad(xHouseRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(yHouseRot), [0, 1, 0]);
+        mat4.translate(mvMatrix, [xHouseTranslate <= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate >= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate >= 0? zHouseTranslate: -zHouseTranslate]);   
     }
     //scale house
-    mat4.scale(mvMatrix, [xScale, yScale, zScale]);
+    mat4.scale(mvMatrix, [xHouseScale, yHouseScale, zHouseScale]);
     //translate house
-    mat4.translate(mvMatrix, [xTranslate, yTranslate, zTranslate]);   
+    mat4.translate(mvMatrix, [xHouseTranslate, yHouseTranslate, zHouseTranslate]);   
    
-    mvMatrix = shearMatrix(mvMatrix, xShear, yShear, zShear);
+    mvMatrix = shearMatrix(mvMatrix, xHouseShear, yHouseShear, zHouseShear);
    
     mvPushMatrix()
     mat4.scale(mvMatrix, [2.0, 2.0, 2.0]);
@@ -783,7 +805,27 @@ function drawScene() {
     mvPopMatrix();
     gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
     mvPopMatrix();
+    mvPushMatrix();
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
+    //Transformations for tree
+
+    //rotate house
+
+        //mat4.translate(mvMatrix, [xTreeTranslate >= 0? xTreeTranslate: -xTreeTranslate ,yTreeTranslate <= 0? yTreeTranslate: -yTreeTranslate, -zTreeTranslate <= 0? zTreeTranslate: -zTreeTranslate]);   
+        mat4.translate(mvMatrix, [6.0+xTreeTranslate, -1.5, 0.0]);
+        mat4.rotate(mvMatrix, degToRad(xTreeRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(yTreeRot), [0, 1, 0]);
+        mat4.translate(mvMatrix, [-6.0-xTreeTranslate, 1.5, 0.0]);
+        //mat4.translate(mvMatrix, [xTreeTranslate <= 0? xTreeTranslate: -xTreeTranslate ,yTreeTranslate >= 0? yTreeTranslate: -yTreeTranslate, -zTreeTranslate >= 0? zTreeTranslate: -zTreeTranslate]);   
+        
+    
+    //scale Tree
+    mat4.scale(mvMatrix, [xTreeScale, yTreeScale, zTreeScale]);
+    //translate Tree
+    mat4.translate(mvMatrix, [xTreeTranslate, yTreeTranslate, zTreeTranslate]);   
+    mat4.translate(mvMatrix, [6.0+xTreeTranslate, -1.5, 0.0]);
+    mvMatrix = shearMatrix(mvMatrix, xTreeShear, yTreeShear, zTreeShear);
+    mat4.translate(mvMatrix, [-6.0-xTreeTranslate, 1.5, 0.0]);
     mvPushMatrix();
     
    
@@ -809,6 +851,7 @@ function drawScene() {
     mvPopMatrix();
 
     mvPushMatrix();
+    //tree sphere
     mat4.translate(mvMatrix, [5.9,1.0, 0.0]);
     gl.activeTexture(gl.TEXTURE6);
     gl.bindTexture(gl.TEXTURE_2D, topTreeTexture);
@@ -824,6 +867,7 @@ function drawScene() {
     gl.drawElements(gl.TRIANGLES, treeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 
     mvPopMatrix();
+    mvPopMatrix();  
      
 }
 
@@ -836,8 +880,10 @@ function animate() {
     if (lastTime != 0) {
         var elapsed = timeNow - lastTime;
 
-        xRot += (xSpeed * elapsed) / 1000.0;
-        yRot += (ySpeed * elapsed) / 1000.0;
+        xHouseRot += (xHouseSpeed * elapsed) / 1000.0;
+        yHouseRot += (yHouseSpeed * elapsed) / 1000.0;
+        xTreeRot += (xTreeSpeed * elapsed) / 1000.0;
+        yTreeRot += (yTreeSpeed * elapsed) / 1000.0;
     }
     lastTime = timeNow;
 }
