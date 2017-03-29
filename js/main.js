@@ -807,6 +807,16 @@ function drawScene() {
     }
     //scale house
     mat4.scale(mvMatrix, [xHouseScale, yHouseScale, zHouseScale]);
+      if (xHouseTranslate < 0) {
+        mat4.translate(mvMatrix, [xHouseTranslate <= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate <= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate <= 0? zHouseTranslate: -zHouseTranslate]);   
+        mat4.scale(mvMatrix, [xHouseScale, yHouseScale, zHouseScale]);
+        mat4.translate(mvMatrix, [xHouseTranslate >= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate >= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate >= 0? zHouseTranslate: -zHouseTranslate]);   
+    }
+    else {
+        mat4.translate(mvMatrix, [xHouseTranslate >= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate <= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate <= 0? zHouseTranslate: -zHouseTranslate]);   
+        mat4.scale(mvMatrix, [xHouseScale, yHouseScale, zHouseScale]);
+        mat4.translate(mvMatrix, [xHouseTranslate <= 0? xHouseTranslate: -xHouseTranslate ,yHouseTranslate >= 0? yHouseTranslate: -yHouseTranslate, -zHouseTranslate >= 0? zHouseTranslate: -zHouseTranslate]);   
+    }
     //translate house
     mat4.translate(mvMatrix, [xHouseTranslate, yHouseTranslate, zHouseTranslate]);   
    
@@ -997,7 +1007,9 @@ function drawScene() {
         
     
     //scale Tree
+    mat4.translate(mvMatrix, [6.0+xTreeTranslate, -1.5+yTreeTranslate, zTreeTranslate]);
     mat4.scale(mvMatrix, [xTreeScale, yTreeScale, zTreeScale]);
+    mat4.translate(mvMatrix, [-6.0-xTreeTranslate, 1.5-yTreeTranslate, -zTreeTranslate]);
     //translate Tree
     mat4.translate(mvMatrix, [xTreeTranslate, yTreeTranslate, zTreeTranslate]);   
     mat4.translate(mvMatrix, [6.0+xTreeTranslate, -1.5, 0.0]);
