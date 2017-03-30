@@ -48,6 +48,9 @@ var zTreeShear = 0;
 var xTreeTranslate = 0.0;
 var yTreeTranslate = 0.0;
 var zTreeTranslate = -8.0;
+var lines = false;
+var points = false;
+var triangles = true;
 
 
 var z = -15.0;
@@ -867,7 +870,15 @@ function drawScene() {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
     setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
+    if (lines) {
+        gl.drawElements(gl.LINES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (triangles) {
+        gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (points) {
+        gl.drawElements(gl.POINTS, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+
     mvPopMatrix();
     mat4.translate(mvMatrix, [0.0, 2.0, 0.0]);
     //pyramid
@@ -890,8 +901,14 @@ function drawScene() {
     
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleVerticesIndexBuffer);
     setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLES, 0, trianglesVerticeBuffer.numItems);
-
+    if (lines) {
+        gl.drawArrays(gl.LINES, 0, trianglesVerticeBuffer.numItems);
+    } else if (triangles) {
+        gl.drawArrays(gl.TRIANGLES, 0, trianglesVerticeBuffer.numItems);
+    } else if (points) {
+        gl.drawArrays(gl.POINTS, 0, trianglesVerticeBuffer.numItems);    
+    }
+ 
     mvPopMatrix();
     //window
     mvPushMatrix();
@@ -988,7 +1005,13 @@ function drawScene() {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
     setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, mesh.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    if (lines) {
+        gl.drawElements(gl.LINES, mesh.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (triangles) {
+        gl.drawElements(gl.TRIANGLES, mesh.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (points) {
+        gl.drawElements(gl.POINTS, mesh.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
     mvPopMatrix();
     gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
     mvPopMatrix();
@@ -1036,7 +1059,13 @@ function drawScene() {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeTreeVertexIndexBuffer);
     setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    if (lines) {
+        gl.drawElements(gl.LINES, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (triangles) {
+        gl.drawElements(gl.TRIANGLES, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (points) {
+        gl.drawElements(gl.POINTS, cubeTreeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
     mvPopMatrix();
 
     mvPushMatrix();
@@ -1053,7 +1082,14 @@ function drawScene() {
     gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, treeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, treeVertexIndexBuffer);
     setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, treeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    if (lines) {
+        gl.drawElements(gl.LINES, treeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+    else if (triangles) {
+        gl.drawElements(gl.TRIANGLES, treeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (points) {
+        gl.drawElements(gl.POINTS, treeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
 
     mvPopMatrix();
     mvPopMatrix();  
@@ -1070,7 +1106,14 @@ function drawScene() {
     gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, sunVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sunVertexIndexBuffer);
     setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, sunVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    if (lines) {
+        gl.drawElements(gl.LINES, sunVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+    else if (triangles) {
+        gl.drawElements(gl.TRIANGLES, sunVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    } else if (points) {
+        gl.drawElements(gl.POINTS, sunVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
     mvPopMatrix();
     mvPushMatrix();
     mat4.translate(mvMatrix, [0.0, -3.6, -20.0]);
@@ -1090,7 +1133,14 @@ function drawScene() {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sandVertexIndexBuffer);
     setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, sandVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    if (lines) {
+        gl.drawElements(gl.LINES, sandVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+    else if (triangles) {
+        gl.drawElements(gl.TRIANGLES, sandVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);   
+    } else if (points) {
+        gl.drawElements(gl.POINTS, sandVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);   
+    }
     mvPopMatrix();
      
 }

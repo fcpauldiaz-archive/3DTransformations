@@ -109,6 +109,24 @@ function handleKeyUp(event) {
         }
       
     }
+    // T
+    if (currentlyPressedKeys[84]) {
+        triangles = true;
+        points = false;
+        lines = false;
+    }
+    // L
+    if (currentlyPressedKeys[76]) {
+        lines = true;
+        points = false;
+        triangles = false;
+    }
+    // P
+    if (currentlyPressedKeys[80]) {
+        points = true;
+        lines = false;
+        triangles = false;
+    }
     currentlyPressedKeys[event.keyCode] = false;
 }
 
