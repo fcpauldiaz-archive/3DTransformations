@@ -17,26 +17,34 @@ function handleKeyUp(event) {
         treeActive = true;
         houseActive = false;
     }
+    //up or down
+    if (currentlyPressedKeys[33] || currentlyPressedKeys[34]) {
+        pitchRate = 0;
+    }
     if (currentlyPressedKeys[37]) {
         // Left cursor key
         yHouseSpeed = 0;
         yTreeSpeed = 0;
+        yawRate = 0;
 
     }
     if (currentlyPressedKeys[39]) {
         // Right cursor key
         yHouseSpeed = 0;
         yTreeSpeed = 0;
+        yawRate = 0;
     }
     if (currentlyPressedKeys[38]) {
         // Up cursor key
         xHouseSpeed = 0;
         xTreeSpeed = 0;
+        speed = 0;
     }
     if (currentlyPressedKeys[40]) {
         // Down cursor key
         xHouseSpeed = 0;
         xTreeSpeed = 0;
+        speed = 0;
     }
     if (currentlyPressedKeys[79]) {
         open = !open;
@@ -54,12 +62,12 @@ function handleKeyUp(event) {
     //scale active
     if (currentlyPressedKeys[83]) {
         if (houseActive) {
-            scaleHouseActive = !scaleHouseActive;
+            scaleHouseActive = true;
             translateHouseActive = false;
             rotateHouseActive = false;
             shearHouseActive = false;
         } else if (treeActive) {
-            scaleTreeActive = !scaleTreeActive;
+            scaleTreeActive = true;
             translateTreeActive = false;
             rotateTreeActive = false;
             shearTreeActive = false;
@@ -69,12 +77,12 @@ function handleKeyUp(event) {
     //translate active
     if (currentlyPressedKeys[84]) {
         if (houseActive) {
-            translateHouseActive = !translateHouseActive;
+            translateHouseActive = true;
             rotateHouseActive = false;
             scaleHouseActive = false;
             shearHouseActive = false;
         } else if(treeActive) {
-            translateTreeActive = !translateTreeActive;
+            translateTreeActive = true;
             rotateTreeActive = false;
             scaleTreeActive = false;
             shearTreeActive = false;
@@ -83,12 +91,12 @@ function handleKeyUp(event) {
     }
     if (currentlyPressedKeys[82]) {
         if (houseActive) {
-            rotateHouseActive = !rotateHouseActive;
+            rotateHouseActive = true;
             translateHouseActive = false;
             scaleHouseActive = false;
             shearHouseActive = false;
         } else if (treeActive) {
-            rotateTreeActive = !rotateTreeActive;
+            rotateTreeActive = true;
             translateTreeActive = false;
             scaleTreeActive = false;
             shearTreeActive = false;
@@ -97,12 +105,12 @@ function handleKeyUp(event) {
     }
     if (currentlyPressedKeys[69]) {
         if (houseActive) {
-            shearHouseActive = !shearHouseActive;
+            shearHouseActive = true;
             translateHouseActive = false;
             scaleHouseActive = false;
             rotateHouseActive = false;
         } else if (treeActive) {
-            shearTreeActive = !shearTreeActive;
+            shearTreeActive = true;
             translateTreeActive = false;
             scaleTreeActive = false;
             rotateTreeActive = false;
@@ -127,6 +135,31 @@ function handleKeyUp(event) {
         lines = false;
         triangles = false;
     }
+    // C
+    if (currentlyPressedKeys[67]) {
+        cameraActive = !cameraActive;
+        shearTreeActive = false;
+        translateTreeActive = false;
+        scaleTreeActive = false;
+        rotateTreeActive = false;
+        shearHouseActive = false;
+        translateHouseActive = false;
+        scaleHouseActive = false;
+        rotateHouseActive = false;
+
+    }
+    // H
+    if (currentlyPressedKeys[72]) {
+
+        showHelp = !showHelp;
+        if (showHelp) {
+           document.getElementById('help').style.display = '';
+
+        }
+        else {
+            document.getElementById('help').style.display = 'none';
+        }
+    }
     currentlyPressedKeys[event.keyCode] = false;
 }
 
@@ -138,10 +171,10 @@ function handleKeys() {
             if (scaleHouseActive) {
                 zHouseScale += 0.1;
             } else if (translateHouseActive) {
-                zHouseTranslate -= 0.5;
+                z -= 0.5;
             } 
             else if (rotateHouseActive) {
-                z -= 0.5;
+               
             }
             else if (shearHouseActive) {
                 zHouseShear -= 0.1;
@@ -160,6 +193,9 @@ function handleKeys() {
                 zTreeShear -= 0.1;
             }
         }
+        if (cameraActive) {
+            pitchRate = 0.1;
+        }
     }
     if (currentlyPressedKeys[34]) {
         // Page Down
@@ -167,10 +203,10 @@ function handleKeys() {
             if (scaleHouseActive) {
                 zHouseScale -= 0.1;
             } else if(translateHouseActive) {
-                zHouseTranslate += 0.5;
+                z += 0.5;
             }
             else if (rotateHouseActive) {
-                z += 0.5;
+               
             }
             else if (shearHouseActive) {
                 zHouseShear += 0.1;
@@ -188,6 +224,9 @@ function handleKeys() {
                 zTreeShear += 0.1;
             }
         }
+        if (cameraActive) {
+            pitchRate = -0.1;
+        }
       
     }
     if (currentlyPressedKeys[37]) {
@@ -199,7 +238,7 @@ function handleKeys() {
                 xHouseTranslate -= 0.5;
             } 
             else if (rotateHouseActive) {
-                yHouseSpeed -= 1;
+                yHouseSpeed -= 5;
             }
             else if (shearHouseActive) {
                 xHouseShear -= 0.1;
@@ -211,11 +250,14 @@ function handleKeys() {
                 xTreeTranslate -= 0.5;
             } 
             else if (rotateTreeActive) {
-                yTreeSpeed -= 1;
+                yTreeSpeed -= 5;
             }
             else if (shearTreeActive) {
                 xTreeShear -= 0.1;
             }
+        }
+        if (cameraActive) {
+            yawRate = 0.1;
         }
  
     }
@@ -228,7 +270,7 @@ function handleKeys() {
                 xHouseTranslate += 0.5;
             } 
             else if (rotateHouseActive) {
-               yHouseSpeed += 1; 
+               yHouseSpeed += 5; 
             }
             else if (shearHouseActive) {
                 xHouseShear += 0.1;
@@ -240,11 +282,15 @@ function handleKeys() {
                 xTreeTranslate += 0.5;
             } 
             else if (rotateTreeActive) {
-               yTreeSpeed += 1; 
+               yTreeSpeed += 5; 
             }
             else if (shearTreeActive) {
                 xTreeShear += 0.1;
             }
+        }
+        if (cameraActive) {
+            yawRate = -0.1;
+
         }
      
     }
@@ -257,7 +303,7 @@ function handleKeys() {
                 yHouseTranslate += 0.5;
             } 
             else if (rotateHouseActive) {
-                xHouseSpeed -= 1;
+                xHouseSpeed -= 5;
             }
             else if (shearHouseActive) {
                 yHouseShear += 0.1;
@@ -269,11 +315,14 @@ function handleKeys() {
                 yTreeTranslate += 0.5;
             } 
             else if (rotateTreeActive) {
-                xTreeSpeed -= 1;
+                xTreeSpeed -= 5;
             }
             else if (shearTreeActive) {
                 yTreeShear += 0.1;
             }
+        }
+        if (cameraActive) {
+            speed = 0.003;
         }
 
     }
@@ -286,7 +335,7 @@ function handleKeys() {
                 yHouseTranslate -= 0.5;
             }
              else if (rotateHouseActive) {
-                xHouseSpeed += 1;
+                xHouseSpeed += 5;
             }
             else if (shearHouseActive) {
                 yHouseShear -= 0.1;
@@ -298,11 +347,14 @@ function handleKeys() {
                 yTreeTranslate -= 0.5;
             }
              else if (rotateTreeActive) {
-                xTreeSpeed += 1;
+                xTreeSpeed += 5;
             }
             else if (shearTreeActive) {
                 yTreeShear -= 0.1;
             }
+        }
+        if (cameraActive) {
+            speed = -0.003;
         }
        
     }

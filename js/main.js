@@ -51,9 +51,22 @@ var zTreeTranslate = -8.0;
 var lines = false;
 var points = false;
 var triangles = true;
-
+var showHelp = false;
 
 var z = -15.0;
+
+var pitch = 0;
+var pitchRate = 0;
+
+var yaw = 0;
+var yawRate = 0;
+
+var xPos = 0;
+var yPos = 0.4;
+var zPos = 0;
+
+var speed = 0;
+var cameraActive = false;
 
 
 var cubeVertexPositionBuffer;
@@ -792,6 +805,9 @@ function drawScene() {
     mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 
     mat4.identity(mvMatrix);
+    mat4.rotate(mvMatrix, degToRad(-pitch), [1, 0, 0]);
+    mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+    mat4.translate(mvMatrix, [-xPos, -yPos, -zPos]);
     mvPushMatrix();
     mat4.translate(mvMatrix, [0.0, 0.0, z]);
 
@@ -923,7 +939,15 @@ function drawScene() {
     gl.bindTexture(gl.TEXTURE_2D, windowTexture);
     gl.uniform1i(shaderProgram.samplerUniform, 3);
     setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+    
+    if (triangles) {
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+    }
+    else if (lines) {
+        gl.drawArrays(gl.LINES, 0, squareVertexPositionBuffer.numItems);
+    } else if (points) {
+        gl.drawArrays(gl.POINTS, 0, squareVertexPositionBuffer.numItems);
+    }
     mvPopMatrix();
     //door draw
     mvPushMatrix();
@@ -944,7 +968,15 @@ function drawScene() {
     gl.bindTexture(gl.TEXTURE_2D, doorTexture);
     gl.uniform1i(shaderProgram.samplerUniform, 4);
     setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorVertexPositionBuffer.numItems);
+    if (triangles) {
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorVertexPositionBuffer.numItems);
+    }
+    else if (lines) {
+        gl.drawArrays(gl.LINES, 0, doorVertexPositionBuffer.numItems);
+    } else if (points) {
+        gl.drawArrays(gl.POINTS, 0, doorVertexPositionBuffer.numItems);
+    }
+
     mvPopMatrix();
     //door left
     mvPushMatrix();
@@ -960,7 +992,14 @@ function drawScene() {
     gl.bindTexture(gl.TEXTURE_2D, crateTexture);
     gl.uniform1i(shaderProgram.samplerUniform, 0);
     setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorLeftPositionBuffer.numItems);
+    if (triangles) {
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorLeftPositionBuffer.numItems);
+    }
+    else if (lines) {
+        gl.drawArrays(gl.LINES, 0, doorLeftPositionBuffer.numItems);
+    } else if (points) {
+        gl.drawArrays(gl.POINTS, 0, doorLeftPositionBuffer.numItems);
+    }
     mvPopMatrix();
     //door rigth
     mvPushMatrix();
@@ -976,7 +1015,14 @@ function drawScene() {
     gl.bindTexture(gl.TEXTURE_2D, wallSmall);
     gl.uniform1i(shaderProgram.samplerUniform, 5);
     setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorRightPositionBuffer.numItems);
+    if (triangles) {
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, doorRightPositionBuffer.numItems);
+    }
+    else if (lines) {
+        gl.drawArrays(gl.LINES, 0, doorRightPositionBuffer.numItems);
+    } else if (points) {
+        gl.drawArrays(gl.POINTS, 0, doorRightPositionBuffer.numItems);
+    }
     mvPopMatrix();
     mvPushMatrix();
     mat4.translate(mvMatrix, [0.0, -3.0, 0.0]);
@@ -1150,7 +1196,7 @@ var lastTime = 0;
 
 function animate() {
     var timeNow = new Date().getTime();
-
+    var joggingAngle = 0;
     if (lastTime != 0) {
         var elapsed = timeNow - lastTime;
 
@@ -1158,6 +1204,15 @@ function animate() {
         yHouseRot += (yHouseSpeed * elapsed) / 1000.0;
         xTreeRot += (xTreeSpeed * elapsed) / 1000.0;
         yTreeRot += (yTreeSpeed * elapsed) / 1000.0;
+        if (speed != 0) {
+            xPos -= Math.sin(degToRad(yaw)) * speed * elapsed;
+            zPos -= Math.cos(degToRad(yaw)) * speed * elapsed;
+
+            joggingAngle += elapsed * 0.6;  // 0.6 "fiddle factor" -- makes it feel more realistic :-)
+            yPos = Math.sin(degToRad(joggingAngle)) / 20 + 0.4
+        }
+        yaw += yawRate * elapsed;
+        pitch += pitchRate * elapsed;
     }
     lastTime = timeNow;
 }
